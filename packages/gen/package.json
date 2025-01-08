@@ -2,8 +2,7 @@
   "name": "@mitre-ttp/gen",
   "version": "1.0.0",
   "description": "",
-  "bin": "bin/index.js",
-  "type": "module",
+  "bin": "dist/bin/index.js",
   "scripts": {
     "build": "tsc bin/index.ts"
   },

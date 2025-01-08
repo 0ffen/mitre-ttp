@@ -11,21 +11,21 @@ if (!command) {
 
 switch (command) {
   case "download":
-    import("../src/download.js").then((m) => m.default());
+    import("../download").then((m) => m.default());
     break;
   case "generate":
     if (!args._[1]) {
       console.error("Usage: gen translate <lang>");
       process.exit(1);
     }
-    import("../src/generate").then((m) => m.default(args._[1]));
+    import("../generate").then((m) => m.default(args._[1]));
     break;
   case "translate":
     if (!args._[1]) {
       console.error("Usage: gen translate <lang>");
       process.exit(1);
     }
-    import("../src/translate").then((m) => m.default(args._[1]));
+    import("../translate").then((m) => m.default(args._[1]));
     break;
   default:
     console.error(`Unknown command: ${command}`);
