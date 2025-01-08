@@ -4,7 +4,7 @@
   "description": "",
   "bin": "dist/bin/index.js",
   "scripts": {
-    "build": "tsc bin/index.ts"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
