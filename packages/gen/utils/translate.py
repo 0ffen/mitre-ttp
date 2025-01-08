@@ -19,10 +19,6 @@ lang = sys.argv[1] if len(sys.argv) > 1 else None
 if lang == None:
     print("Please provide the language code.")
     sys.exit(1)
-if lang == "en":
-    print("You don't need to translate English.")
-    os.rename("../tmp/objects.json", "../tmp/translated.json")
-    sys.exit(0)
 if lang not in prompts:
     print("Invalid language code.")
     sys.exit(1)

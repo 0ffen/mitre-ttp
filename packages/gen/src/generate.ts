@@ -116,10 +116,25 @@ export default function (lang: string) {
     );
 
     if (old_object && old_object.modified === new_object.modified) {
-      result.push({
-        ...old_object,
-        translated: true,
-      });
+      if (new_object.type === "attack-pattern") {
+        const __kill_chain_phase_names = new_object.kill_chain_phases.map(
+          (k) => k.phase_name
+        );
+        const ref$tactics = tactics.filter((t) =>
+          __kill_chain_phase_names.includes(t.x_mitre_shortname)
+        );
+        result.push({
+          ...parseRaw(new_object),
+          description: old_object.description,
+          tactics: ref$tactics.map(external_id),
+          translated: true,
+        });
+      } else {
+        result.push({
+          ...old_object,
+          translated: true,
+        });
+      }
     } else if (new_object.type === "attack-pattern") {
       const __kill_chain_phase_names = new_object.kill_chain_phases.map(
         (k) => k.phase_name
