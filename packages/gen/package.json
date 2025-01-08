@@ -1,0 +1,22 @@
+{
+  "name": "@mitre-ttp/gen",
+  "version": "1.0.0",
+  "description": "",
+  "bin": "bin/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc bin/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.3",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "arg": "^5.0.2",
+    "octokit": "^4.0.3"
+  }
+}
