@@ -31,12 +31,35 @@ const sort = (data: any[], keyProperty: string) =>
     return 0;
   });
 
+const deleteKeys = (data: any[], keys: string[]) =>
+  data.map((d) => {
+    keys.forEach((key) => delete d[key]);
+    return d;
+  });
+
 export default async function (lang: string) {
   runTranslate(lang);
+  const data = JSON.parse(fs.readFileSync(outputPath, "utf-8"));
+  const tactics = data.filter((d: any) => d.type === "tactic");
+  const techniques = data.filter((d: any) => d.type === "technique");
+  const tacticTechniqueJoin = techniques.reduce((acc: any, cur: any) => {
+    cur.tactics.forEach((tactic: string) => {
+      if (!acc[tactic]) acc[tactic] = [];
+      acc[tactic].push(cur.external_id);
+    });
+    return acc;
+  }, {});
   fs.writeFileSync(
     path.resolve(translatePath, `${lang}.json`),
     JSON.stringify(
-      sort(JSON.parse(fs.readFileSync(outputPath, "utf-8")), "external_id"),
+      {
+        tactics: deleteKeys(sort(tactics, "external_id"), ["type"]),
+        techniques: deleteKeys(sort(techniques, "external_id"), [
+          "type",
+          "tactics",
+        ]),
+        tactic_technique: tacticTechniqueJoin,
+      },
       null,
       2
     )

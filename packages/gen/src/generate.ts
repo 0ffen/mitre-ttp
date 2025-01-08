@@ -6,6 +6,7 @@ import { translatePath } from "./translate";
 
 export type RawTTP = XMitreTactic | AttackPattern;
 export type Parsed = {
+  type: "tactic" | "technique";
   title: string;
   description: string;
   external_id: string;
@@ -67,6 +68,7 @@ export interface KillChainPhase {
 function parseRaw(data: RawTTP): Parsed {
   if (data.type === "x-mitre-tactic") {
     return {
+      type: "tactic",
       title: data.name,
       description: data.description,
       external_id: data.external_references[0].external_id!,
@@ -74,6 +76,7 @@ function parseRaw(data: RawTTP): Parsed {
     };
   } else {
     return {
+      type: "technique",
       title: data.name,
       description: data.description,
       external_id: data.external_references[0].external_id!,
@@ -93,10 +96,11 @@ function external_id(data: RawTTP): string {
 
 export default function (lang: string) {
   console.log(`Generating ${lang}...`);
-  const old_data = parseIfExists<Parsed[]>(
-    path.join(translatePath, `${lang}.json`),
-    []
-  );
+  const raw$old_data = parseIfExists<{
+    tactics: Parsed[];
+    techniques: Parsed[];
+  }>(path.join(translatePath, `${lang}.json`), { tactics: [], techniques: [] });
+  const old_data = [...raw$old_data.tactics, ...raw$old_data.techniques];
   const new_data = parseIfExists<{ objects: RawTTP[] } | null>(
     path.resolve(tempPath, "enterprise-attack.json"),
     null

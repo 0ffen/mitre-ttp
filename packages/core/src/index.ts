@@ -8,7 +8,6 @@ interface TTP {
   external_id: string;
   modified: string;
   translated?: boolean;
-  tactics?: string[];
 }
 
 function binarySearch<T>(
@@ -65,66 +64,57 @@ function lowerBound<T>(arr: T[], target: string, key: keyof T): number {
   return start;
 }
 
-class TTPDatabase {
-  private data: TTP[] = [];
-  private tacticRefs: Record<string, TTP[]> = {};
+export default class TTPDatabase {
+  private tactics: TTP[] = [];
+  private techniques: TTP[] = [];
+  private tacticTechniqueRefs: Record<string, TTP[]> = {};
 
   constructor(private lang: LanguageCode) {
-    this.data = JSON.parse(
+    const data = JSON.parse(
       fs.readFileSync(
         path.resolve(`${__dirname}/../translate/${lang}.json`),
         "utf-8"
       )
     );
-
-    this.data.forEach((item) => {
-      if (item.tactics) {
-        item.tactics.forEach((tactic) => {
-          if (!this.tacticRefs[tactic]) {
-            this.tacticRefs[tactic] = [];
-          }
-
-          this.tacticRefs[tactic].push(item);
-        });
-      }
-    });
+    this.tactics = data.tactics;
+    this.techniques = data.techniques;
+    this.tacticTechniqueRefs = data.tactic_technique;
   }
 
   public findOneByExternalId(externalId: string): TTP | undefined {
-    return binarySearch(this.data, externalId, "external_id");
+    return binarySearch(this.tactics, externalId, "external_id");
   }
 
   public findAllTechniques(): TTP[] {
-    const start = lowerBound(this.data, "T0000", "external_id");
-    const end = upperBound(this.data, "T9999", "external_id");
+    const start = lowerBound(this.tactics, "T0000", "external_id");
+    const end = upperBound(this.tactics, "T9999", "external_id");
 
-    return this.data.slice(start, end);
+    return this.tactics.slice(start, end);
   }
 
   public findAllTactics(): TTP[] {
-    const start = lowerBound(this.data, "TA000", "external_id");
-    const end = upperBound(this.data, "TA999", "external_id");
+    const start = lowerBound(this.tactics, "TA000", "external_id");
+    const end = upperBound(this.tactics, "TA999", "external_id");
 
-    return this.data.slice(start, end);
+    return this.tactics.slice(start, end);
   }
 
-  public findAllByKeyword(keyword: string): TTP[] {
+  public findAllByDepth(keyword: string): TTP[] {
     keyword = keyword.trim().toUpperCase();
     if (keyword.startsWith("TA")) {
-      const techniqueKeyword = keyword.split(">")[1];
+      const techniqueKeyword = keyword.split(">")[1].trim();
       if (techniqueKeyword) {
-        return this.data.filter((item) =>
-          item.title.includes(techniqueKeyword)
+        const keyword = techniqueKeyword.replace(" ", "").replace(">", ".");
+        return this.techniques.filter((item) =>
+          item.external_id.includes(keyword)
         );
       } else {
-        return this.data
-          .filter((item) => item.title.includes(techniqueKeyword))
-          .flatMap((tactic) => this.tacticRefs[tactic.external_id]);
+        return this.tactics
+          .filter((item) => item.external_id.includes(keyword))
+          .flatMap((tactic) => this.tacticTechniqueRefs[tactic.external_id]);
       }
     } else {
-      return this.data.filter((item) => item.title.includes(keyword));
+      return this.tactics.filter((item) => item.external_id.includes(keyword));
     }
   }
 }
-
-console.log(new TTPDatabase("ko-KR").findAllTactics());
