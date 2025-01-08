@@ -102,7 +102,7 @@ export default class TTPDatabase {
   public findAllByDepth(keyword: string): TTP[] {
     keyword = keyword.trim().toUpperCase();
     if (keyword.startsWith("TA")) {
-      const techniqueKeyword = keyword.split(">")[1].trim();
+      const techniqueKeyword = keyword.split(">")[1]?.trim();
       if (techniqueKeyword) {
         const keyword = techniqueKeyword.replace(" ", "").replace(">", ".");
         return this.techniques.filter((item) =>
@@ -118,3 +118,5 @@ export default class TTPDatabase {
     }
   }
 }
+
+new TTPDatabase("ko-KR").findAllByDepth("TA");

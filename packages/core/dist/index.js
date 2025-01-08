@@ -75,9 +75,10 @@ class TTPDatabase {
         return this.tactics.slice(start, end);
     }
     findAllByDepth(keyword) {
+        var _a;
         keyword = keyword.trim().toUpperCase();
         if (keyword.startsWith("TA")) {
-            const techniqueKeyword = keyword.split(">")[1].trim();
+            const techniqueKeyword = (_a = keyword.split(">")[1]) === null || _a === void 0 ? void 0 : _a.trim();
             if (techniqueKeyword) {
                 const keyword = techniqueKeyword.replace(" ", "").replace(">", ".");
                 return this.techniques.filter((item) => item.external_id.includes(keyword));
@@ -94,3 +95,4 @@ class TTPDatabase {
     }
 }
 exports.default = TTPDatabase;
+new TTPDatabase("ko-KR").findAllByDepth("TA");
