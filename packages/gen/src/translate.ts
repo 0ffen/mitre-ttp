@@ -18,7 +18,23 @@ const runTranslate = (lang: string) => {
   console.log("Translation done");
 };
 
+const objectify = (data: any[], keyProperty: string) =>
+  data.reduce((acc, cur) => {
+    acc[cur[keyProperty]] = cur;
+    return acc;
+  }, {});
+
 export default async function (lang: string) {
   runTranslate(lang);
-  fs.renameSync(outputPath, path.resolve(translatePath, `${lang}.json`));
+  fs.writeFileSync(
+    path.resolve(translatePath, `${lang}.json`),
+    JSON.stringify(
+      objectify(
+        JSON.parse(fs.readFileSync(outputPath, "utf-8")),
+        "external_id"
+      ),
+      null,
+      2
+    )
+  );
 }

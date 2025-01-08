@@ -1,3 +1,4 @@
 {
-  "ko": "문장 안에 있는 예시나 외부 링크들은 다 없애주고 내용을 한국어로 번역하고 번역한 결과만 출력해줘."
+  "en-US": "Remove all examples and external links in the sentence, translate the content into Korean, and only display the translated result.",
+  "ko-KR": "문장 안에 있는 예시나 외부 링크들은 다 없애주고 내용을 한국어로 번역하고 번역한 결과만 출력해줘."
 }
