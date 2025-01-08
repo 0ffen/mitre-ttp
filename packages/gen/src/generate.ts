@@ -93,16 +93,15 @@ function external_id(data: RawTTP): string {
 
 export default function (lang: string) {
   console.log(`Generating ${lang}...`);
-  const old_data = parseIfExists<Record<string, Parsed>>(
+  const old_data = parseIfExists<Parsed[]>(
     path.join(translatePath, `${lang}.json`),
-    {}
+    []
   );
   const new_data = parseIfExists<{ objects: RawTTP[] } | null>(
     path.resolve(tempPath, "enterprise-attack.json"),
     null
   );
-  if (Object.keys(old_data).length === 0)
-    console.warn(`Language ${lang} not found`);
+  if (old_data.length === 0) console.warn(`Language ${lang} not found`);
   if (new_data === null) throw new Error("enterprise-attack.json not found");
 
   const result: Parsed[] = [];
@@ -112,28 +111,15 @@ export default function (lang: string) {
   const tactics = new_objects.filter((o) => o.type === "x-mitre-tactic");
 
   for (const new_object of new_objects) {
-    const old_object = old_data[new_object.external_references[0].external_id!];
+    const old_object = old_data.find(
+      (o) => o.external_id === external_id(new_object)
+    );
 
     if (old_object && old_object.modified === new_object.modified) {
-      if (new_object.type === "attack-pattern") {
-        const __kill_chain_phase_names = new_object.kill_chain_phases.map(
-          (k) => k.phase_name
-        );
-        const ref$tactics = tactics.filter((t) =>
-          __kill_chain_phase_names.includes(t.x_mitre_shortname)
-        );
-        result.push({
-          ...parseRaw(new_object),
-          description: old_object.description,
-          tactics: ref$tactics.map(external_id),
-          translated: true,
-        });
-      } else {
-        result.push({
-          ...old_object,
-          translated: true,
-        });
-      }
+      result.push({
+        ...old_object,
+        translated: true,
+      });
     } else if (new_object.type === "attack-pattern") {
       const __kill_chain_phase_names = new_object.kill_chain_phases.map(
         (k) => k.phase_name

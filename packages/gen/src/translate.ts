@@ -24,15 +24,19 @@ const objectify = (data: any[], keyProperty: string) =>
     return acc;
   }, {});
 
+const sort = (data: any[], keyProperty: string) =>
+  data.sort((a, b) => {
+    if (a[keyProperty] < b[keyProperty]) return -1;
+    if (a[keyProperty] > b[keyProperty]) return 1;
+    return 0;
+  });
+
 export default async function (lang: string) {
   runTranslate(lang);
   fs.writeFileSync(
     path.resolve(translatePath, `${lang}.json`),
     JSON.stringify(
-      objectify(
-        JSON.parse(fs.readFileSync(outputPath, "utf-8")),
-        "external_id"
-      ),
+      sort(JSON.parse(fs.readFileSync(outputPath, "utf-8")), "external_id"),
       null,
       2
     )
