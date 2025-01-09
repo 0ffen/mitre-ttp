@@ -8,7 +8,7 @@ importers:
 
   .:
     dependencies:
-      '@mitre-ttp/gen':
+      '@0ffen/mitre-ttp-gen':
         specifier: link:packages/gen
         version: link:packages/gen
 
@@ -30,7 +30,7 @@ importers:
   packages/gen:
     dependencies:
       '@0ffen/mitre-ttp':
-        specifier: link:../core
+        specifier: ../core
         version: link:../core
       arg:
         specifier: ^5.0.2

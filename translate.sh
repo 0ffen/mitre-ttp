@@ -7,10 +7,10 @@ if [ -z $lang ]; then
     exit 1
 fi
 
-pnpm build --filter @
+pnpm install --frozen-lockfile
 pnpm build
 
 cd packages/core
-pnpm gen download
-pnpm gen generate $lang && pnpm gen translate $lang
+pnpm mitre-ttp-gen download
+pnpm mitre-ttp-gen generate $lang && pnpm mitre-ttp-gen translate $lang
 # pnpm gen translate $lang
