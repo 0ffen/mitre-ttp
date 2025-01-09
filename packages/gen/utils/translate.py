@@ -30,7 +30,7 @@ def query_openai(query: str):
         messages=[
             {
                 "role": "system",
-                "content": "문장 안에 있는 예시나 외부 링크들은 다 없애주고 내용을 한국어로 번역하고 번역한 결과만 출력해줘.",
+                "content": prompts[lang],
             },
             {"role": "user", "content": query},
         ],
