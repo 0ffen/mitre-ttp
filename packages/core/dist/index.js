@@ -78,7 +78,7 @@ class TTPDatabase {
     findAllTechniques() {
         return this.techniques;
     }
-    findAllTechniquesByTacticId(tacticId) {
+    findTechniquesByTacticId(tacticId) {
         const tactic = this.findOneByExternalId(tacticId);
         if (!tactic) {
             return [];
@@ -88,16 +88,13 @@ class TTPDatabase {
     findAllTactics() {
         return this.tactics;
     }
-    findAllTacticsByTechniqueId(techniqueId) {
+    findTacticsByTechniqueId(techniqueId) {
         const technique = this.findOneByExternalId(techniqueId);
         if (!technique) {
             return [];
         }
-        const tactic = this.tactics.find((tactic) => this.tacticTechniqueRefs[tactic.external_id].includes(technique));
-        if (!tactic) {
-            return [];
-        }
-        return [tactic];
+        const tactics = this.tactics.filter((tactic) => this.tacticTechniqueRefs[tactic.external_id].includes(technique));
+        return tactics;
     }
     findAllTacticsWithTechniques() {
         const tactics = this.findAllTactics();

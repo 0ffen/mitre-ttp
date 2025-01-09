@@ -20,9 +20,9 @@ export default class TTPDatabase {
     static hasLanguage(lang: LanguageCode): boolean;
     findOneByExternalId(externalId: string): TTP | undefined;
     findAllTechniques(): Technique[];
-    findAllTechniquesByTacticId(tacticId: string): Technique[];
+    findTechniquesByTacticId(tacticId: string): Technique[];
     findAllTactics(): Tactic[];
-    findAllTacticsByTechniqueId(techniqueId: string): Tactic[];
+    findTacticsByTechniqueId(techniqueId: string): Tactic[];
     findAllTacticsWithTechniques(): Tactic[];
 }
 export {};

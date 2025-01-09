@@ -69,12 +69,8 @@ export default function (lang: LanguageCode) {
 
     if (old_object && old_object.modified === new_object.modified) {
       object = { ...old_object };
-      if (new_object.type === "attack-pattern") {
-        object.tactics = old_data
-          .findTacticsByTechniqueId(object.external_id)
-          .map((x) => x.external_id);
-      }
-    } else if (new_object.type === "attack-pattern") {
+    }
+    if (new_object.type === "attack-pattern") {
       const __kill_chain_phase_names = new_object.kill_chain_phases.map(
         (k) => k.phase_name
       );

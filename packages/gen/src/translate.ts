@@ -37,6 +37,16 @@ const deleteKeys = (data: any[], keys: string[]) =>
     return d;
   });
 
+const replacer = (key: string, value: any) =>
+  value instanceof Object && !(value instanceof Array)
+    ? Object.keys(value)
+        .sort()
+        .reduce((sorted: any, key) => {
+          sorted[key] = value[key];
+          return sorted;
+        }, {})
+    : value;
+
 export default async function (lang: string) {
   runTranslate(lang);
   const data = JSON.parse(fs.readFileSync(outputPath, "utf-8"));
@@ -60,7 +70,7 @@ export default async function (lang: string) {
         ]),
         tactic_technique: tacticTechniqueJoin,
       },
-      null,
+      replacer,
       2
     )
   );

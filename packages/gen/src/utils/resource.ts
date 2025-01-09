@@ -59,7 +59,7 @@ export function simplifyObject(obj: Object): SimplifiedObject {
     modified: obj.modified,
     title: obj.name,
     description: obj.description,
-    external_id: obj.id,
+    external_id: obj.external_references[0].external_id!,
   };
 }
 
@@ -108,7 +108,7 @@ export class ResourcesWrapper implements Iterable<SimplifiedObject> {
     const techniques = db.findAllTechniques();
     const relations = tactics.reduce((acc: any, cur: any) => {
       acc[cur.external_id] = db
-        .findAllTechniquesByTacticId(cur.external_id)
+        .findTechniquesByTacticId(cur.external_id)
         .map((t) => t.external_id);
       return acc;
     }, {});
