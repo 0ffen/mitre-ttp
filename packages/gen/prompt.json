@@ -1,4 +1,6 @@
 {
-  "en-US": "Remove all examples and external links in the sentence, translate the content into Korean, and only display the translated result.",
-  "ko-KR": "문장 안에 있는 예시나 외부 링크들은 다 없애주고 내용을 한국어로 번역하고 번역한 결과만 출력해줘."
+  "en-US": "Remove all examples and external links in the sentence, translate the content into English, and only display the translated result.",
+  "ko-KR": "문장 안에 있는 예시나 외부 링크들은 다 없애주고 내용을 한국어로 번역하고 번역한 결과만 출력해줘.",
+  "es-ES": "Elimina todos los ejemplos y enlaces externos de la oración, traduce el contenido al español y muestra solo el resultado traducido.",
+  "ja-JP": "文中のすべての例と外部リンクを削除し、内容を日本語に翻訳して翻訳結果のみを表示します。"
 }

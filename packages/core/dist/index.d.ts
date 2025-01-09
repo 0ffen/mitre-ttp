@@ -6,15 +6,23 @@ interface TTP {
     modified: string;
     translated?: boolean;
 }
+interface Tactic extends TTP {
+    techniques?: Technique[];
+}
+interface Technique extends TTP {
+}
 export default class TTPDatabase {
     private lang;
     private tactics;
     private techniques;
     private tacticTechniqueRefs;
     constructor(lang: LanguageCode);
+    static hasLanguage(lang: LanguageCode): boolean;
     findOneByExternalId(externalId: string): TTP | undefined;
-    findAllTechniques(): TTP[];
-    findAllTactics(): TTP[];
-    findAllByDepth(keyword: string): TTP[];
+    findAllTechniques(): Technique[];
+    findAllTechniquesByTacticId(tacticId: string): Technique[];
+    findAllTactics(): Tactic[];
+    findAllTacticsByTechniqueId(techniqueId: string): Tactic[];
+    findAllTacticsWithTechniques(): Tactic[];
 }
 export {};

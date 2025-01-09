@@ -29,6 +29,9 @@ importers:
 
   packages/gen:
     dependencies:
+      '@0ffen/mitre-ttp':
+        specifier: link:../core
+        version: link:../core
       arg:
         specifier: ^5.0.2
         version: 5.0.2

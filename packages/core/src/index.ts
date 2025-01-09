@@ -10,6 +10,12 @@ interface TTP {
   translated?: boolean;
 }
 
+interface Tactic extends TTP {
+  techniques?: Technique[];
+}
+
+interface Technique extends TTP {}
+
 function binarySearch<T>(
   arr: T[],
   target: string,
@@ -65,9 +71,9 @@ function lowerBound<T>(arr: T[], target: string, key: keyof T): number {
 }
 
 export default class TTPDatabase {
-  private tactics: TTP[] = [];
-  private techniques: TTP[] = [];
-  private tacticTechniqueRefs: Record<string, TTP[]> = {};
+  private tactics: Tactic[] = [];
+  private techniques: Technique[] = [];
+  private tacticTechniqueRefs: Record<string, Technique[]> = {};
 
   constructor(private lang: LanguageCode) {
     const data = JSON.parse(
@@ -78,45 +84,68 @@ export default class TTPDatabase {
     );
     this.tactics = data.tactics;
     this.techniques = data.techniques;
-    this.tacticTechniqueRefs = data.tactic_technique;
+    this.tacticTechniqueRefs = Object.fromEntries(
+      Object.entries(data.tactic_technique as Record<string, string[]>).map(
+        ([tacticId, techniqueIds]) => {
+          return [
+            tacticId,
+            techniqueIds.map(
+              (techniqueId: string) => this.findOneByExternalId(techniqueId)!
+            ),
+          ];
+        }
+      )
+    );
+  }
+
+  static hasLanguage(lang: LanguageCode): boolean {
+    return fs.existsSync(
+      path.resolve(`${__dirname}/../translate/${lang}.json`)
+    );
   }
 
   public findOneByExternalId(externalId: string): TTP | undefined {
-    return binarySearch(this.tactics, externalId, "external_id");
-  }
-
-  public findAllTechniques(): TTP[] {
-    const start = lowerBound(this.tactics, "T0000", "external_id");
-    const end = upperBound(this.tactics, "T9999", "external_id");
-
-    return this.tactics.slice(start, end);
-  }
-
-  public findAllTactics(): TTP[] {
-    const start = lowerBound(this.tactics, "TA000", "external_id");
-    const end = upperBound(this.tactics, "TA999", "external_id");
-
-    return this.tactics.slice(start, end);
-  }
-
-  public findAllByDepth(keyword: string): TTP[] {
-    keyword = keyword.trim().toUpperCase();
-    if (keyword.startsWith("TA")) {
-      const techniqueKeyword = keyword.split(">")[1]?.trim();
-      if (techniqueKeyword) {
-        const keyword = techniqueKeyword.replace(" ", "").replace(">", ".");
-        return this.techniques.filter((item) =>
-          item.external_id.includes(keyword)
-        );
-      } else {
-        return this.tactics
-          .filter((item) => item.external_id.includes(keyword))
-          .flatMap((tactic) => this.tacticTechniqueRefs[tactic.external_id]);
-      }
-    } else {
-      return this.tactics.filter((item) => item.external_id.includes(keyword));
+    if (externalId.startsWith("TA")) {
+      return binarySearch(this.tactics, externalId, "external_id");
     }
+    return binarySearch(this.techniques, externalId, "external_id");
+  }
+
+  public findAllTechniques(): Technique[] {
+    return this.techniques;
+  }
+
+  public findAllTechniquesByTacticId(tacticId: string): Technique[] {
+    const tactic = this.findOneByExternalId(tacticId);
+    if (!tactic) {
+      return [];
+    }
+    return this.tacticTechniqueRefs[tactic.external_id];
+  }
+
+  public findAllTactics(): Tactic[] {
+    return this.tactics;
+  }
+
+  public findAllTacticsByTechniqueId(techniqueId: string): Tactic[] {
+    const technique = this.findOneByExternalId(techniqueId);
+    if (!technique) {
+      return [];
+    }
+    const tactic = this.tactics.find((tactic) =>
+      this.tacticTechniqueRefs[tactic.external_id].includes(technique)
+    );
+    if (!tactic) {
+      return [];
+    }
+    return [tactic];
+  }
+
+  public findAllTacticsWithTechniques(): Tactic[] {
+    const tactics = this.findAllTactics();
+    return tactics.map((tactic) => ({
+      ...tactic,
+      techniques: this.tacticTechniqueRefs[tactic.external_id],
+    }));
   }
 }
-
-new TTPDatabase("ko-KR").findAllByDepth("TA");

@@ -59,40 +59,49 @@ class TTPDatabase {
         const data = JSON.parse(fs_1.default.readFileSync(path_1.default.resolve(`${__dirname}/../translate/${lang}.json`), "utf-8"));
         this.tactics = data.tactics;
         this.techniques = data.techniques;
-        this.tacticTechniqueRefs = data.tactic_technique;
+        this.tacticTechniqueRefs = Object.fromEntries(Object.entries(data.tactic_technique).map(([tacticId, techniqueIds]) => {
+            return [
+                tacticId,
+                techniqueIds.map((techniqueId) => this.findOneByExternalId(techniqueId)),
+            ];
+        }));
+    }
+    static hasLanguage(lang) {
+        return fs_1.default.existsSync(path_1.default.resolve(`${__dirname}/../translate/${lang}.json`));
     }
     findOneByExternalId(externalId) {
-        return binarySearch(this.tactics, externalId, "external_id");
+        if (externalId.startsWith("TA")) {
+            return binarySearch(this.tactics, externalId, "external_id");
+        }
+        return binarySearch(this.techniques, externalId, "external_id");
     }
     findAllTechniques() {
-        const start = lowerBound(this.tactics, "T0000", "external_id");
-        const end = upperBound(this.tactics, "T9999", "external_id");
-        return this.tactics.slice(start, end);
+        return this.techniques;
+    }
+    findAllTechniquesByTacticId(tacticId) {
+        const tactic = this.findOneByExternalId(tacticId);
+        if (!tactic) {
+            return [];
+        }
+        return this.tacticTechniqueRefs[tactic.external_id];
     }
     findAllTactics() {
-        const start = lowerBound(this.tactics, "TA000", "external_id");
-        const end = upperBound(this.tactics, "TA999", "external_id");
-        return this.tactics.slice(start, end);
+        return this.tactics;
     }
-    findAllByDepth(keyword) {
-        var _a;
-        keyword = keyword.trim().toUpperCase();
-        if (keyword.startsWith("TA")) {
-            const techniqueKeyword = (_a = keyword.split(">")[1]) === null || _a === void 0 ? void 0 : _a.trim();
-            if (techniqueKeyword) {
-                const keyword = techniqueKeyword.replace(" ", "").replace(">", ".");
-                return this.techniques.filter((item) => item.external_id.includes(keyword));
-            }
-            else {
-                return this.tactics
-                    .filter((item) => item.external_id.includes(keyword))
-                    .flatMap((tactic) => this.tacticTechniqueRefs[tactic.external_id]);
-            }
+    findAllTacticsByTechniqueId(techniqueId) {
+        const technique = this.findOneByExternalId(techniqueId);
+        if (!technique) {
+            return [];
         }
-        else {
-            return this.tactics.filter((item) => item.external_id.includes(keyword));
+        const tactic = this.tactics.find((tactic) => this.tacticTechniqueRefs[tactic.external_id].includes(technique));
+        if (!tactic) {
+            return [];
         }
+        return [tactic];
+    }
+    findAllTacticsWithTechniques() {
+        const tactics = this.findAllTactics();
+        return tactics.map((tactic) => (Object.assign(Object.assign({}, tactic), { techniques: this.tacticTechniqueRefs[tactic.external_id] })));
     }
 }
 exports.default = TTPDatabase;
-new TTPDatabase("ko-KR").findAllByDepth("TA");

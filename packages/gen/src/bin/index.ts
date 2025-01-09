@@ -15,15 +15,16 @@ switch (command) {
     import("../download").then((m) => m.default());
     break;
   case "generate":
-    if (!args._[1]) {
+    const code = args._[1];
+    if (!code) {
       console.error("Usage: gen translate <lang>");
       process.exit(1);
     }
-    if (!isLanguageCode(args._[1])) {
+    if (!isLanguageCode(code)) {
       console.error("Invalid language code");
       process.exit(1);
     }
-    import("../generate").then((m) => m.default(args._[1]));
+    import("../generate").then((m) => m.default(code));
     break;
   case "translate":
     if (!args._[1]) {
