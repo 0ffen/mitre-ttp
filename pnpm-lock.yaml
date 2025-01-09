@@ -30,8 +30,8 @@ importers:
   packages/gen:
     dependencies:
       '@0ffen/mitre-ttp':
-        specifier: ../core
-        version: link:../core
+        specifier: ~1.0.0
+        version: 1.0.1
       arg:
         specifier: ^5.0.2
         version: 5.0.2
@@ -50,6 +50,9 @@ importers:
         version: 5.7.2
 
 packages:
+
+  '@0ffen/mitre-ttp@1.0.1':
+    resolution: {integrity: sha512-2sdTr694jLCTsmzuOvjBn8XTAEzw74WhdrvPknw/qqxYghSNNIsklSQ8CSKfXug7c5sZ7b91D435K4XFh12nKA==, tarball: https://npm.pkg.github.com/download/@0ffen/mitre-ttp/1.0.1/72311ea469c56c561163ef885c596828b45d77dc}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -1439,6 +1442,8 @@ packages:
     engines: {node: '>=10'}
 
 snapshots:
+
+  '@0ffen/mitre-ttp@1.0.1': {}
 
   '@ampproject/remapping@2.3.0':
     dependencies:
