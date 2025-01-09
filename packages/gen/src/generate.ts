@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 
 import { tempPath } from "./utils/temp";
-import { translatePath } from "./translate";
 import {
   AttackPattern,
   ResourcesWrapper,
@@ -91,4 +90,5 @@ export default function (lang: LanguageCode) {
 
   const count = result.filter((r) => !r.translated).length;
   console.log(`Need to translate ${count} objects`);
+  if (count === 0) process.exit(1);
 }

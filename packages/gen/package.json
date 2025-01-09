@@ -1,5 +1,5 @@
 {
-  "name": "@mitre-ttp/gen",
+  "name": "gen",
   "version": "1.0.0",
   "description": "",
   "bin": "dist/bin/index.js",

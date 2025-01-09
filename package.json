@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "gen": "pnpm run --filter @mitre-ttp/gen"
+    "build": "pnpm run -r build"
   },
   "keywords": [],
   "author": "",
