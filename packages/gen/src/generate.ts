@@ -23,9 +23,16 @@ export type Parsed = {
   translated?: boolean;
   tactics?: string[];
 };
+type ExtendedObject = SimplifiedObject & {
+  type: "tactic" | "technique";
+  tactics?: string[];
+};
 
 function external_id(obj: RawTTP) {
   return obj.external_references[0].external_id!;
+}
+function isTactic(obj: RawTTP): obj is XMitreTactic {
+  return obj.type === "x-mitre-tactic";
 }
 
 function parseIfExists<T>(path: string): T;
@@ -51,14 +58,22 @@ export default function (lang: LanguageCode) {
     ["x-mitre-tactic", "attack-pattern"].includes(o.type)
   );
 
-  const result: (SimplifiedObject & { tactics?: string[] })[] = [];
+  const result: ExtendedObject[] = [];
   const tactics = new_data.filter((o) => o.type === "x-mitre-tactic");
 
   for (const new_object of new_data) {
     const old_object = old_data.findByExternalId(external_id(new_object));
+    let object: SimplifiedObject & {
+      tactics?: string[];
+    } = simplifyObject(new_object);
 
     if (old_object && old_object.modified === new_object.modified) {
-      result.push(old_object);
+      object = { ...old_object };
+      if (new_object.type === "attack-pattern") {
+        object.tactics = old_data
+          .findTacticsByTechniqueId(object.external_id)
+          .map((x) => x.external_id);
+      }
     } else if (new_object.type === "attack-pattern") {
       const __kill_chain_phase_names = new_object.kill_chain_phases.map(
         (k) => k.phase_name
@@ -66,13 +81,12 @@ export default function (lang: LanguageCode) {
       const ref$tactics = tactics.filter((t) =>
         __kill_chain_phase_names.includes(t.x_mitre_shortname)
       );
-      result.push({
-        ...simplifyObject(new_object),
-        tactics: ref$tactics.map(external_id),
-      });
-    } else {
-      result.push(simplifyObject(new_object));
+      object.tactics = ref$tactics.map(external_id);
     }
+    result.push({
+      ...object,
+      type: isTactic(new_object) ? "tactic" : "technique",
+    });
   }
   fs.writeFileSync(
     path.resolve(tempPath, "objects.json"),

@@ -115,7 +115,7 @@ export default class TTPDatabase {
     return this.techniques;
   }
 
-  public findAllTechniquesByTacticId(tacticId: string): Technique[] {
+  public findTechniquesByTacticId(tacticId: string): Technique[] {
     const tactic = this.findOneByExternalId(tacticId);
     if (!tactic) {
       return [];
@@ -127,18 +127,15 @@ export default class TTPDatabase {
     return this.tactics;
   }
 
-  public findAllTacticsByTechniqueId(techniqueId: string): Tactic[] {
+  public findTacticsByTechniqueId(techniqueId: string): Tactic[] {
     const technique = this.findOneByExternalId(techniqueId);
     if (!technique) {
       return [];
     }
-    const tactic = this.tactics.find((tactic) =>
+    const tactics = this.tactics.filter((tactic) =>
       this.tacticTechniqueRefs[tactic.external_id].includes(technique)
     );
-    if (!tactic) {
-      return [];
-    }
-    return [tactic];
+    return tactics;
   }
 
   public findAllTacticsWithTechniques(): Tactic[] {

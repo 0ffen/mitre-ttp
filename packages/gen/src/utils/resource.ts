@@ -145,9 +145,32 @@ export class ResourcesWrapper implements Iterable<SimplifiedObject> {
     return this.tactics.find((t) => t.external_id === externalId);
   }
 
+  public findTacticsByTechniqueId(techniqueId: string): SimplifiedObject[] {
+    const technique = this.findByExternalId(techniqueId);
+    if (!technique) {
+      return [];
+    }
+    const tactics = this.tactics.filter((tactic) =>
+      this.tacticTechniqueRelation[tactic.external_id].includes(
+        technique.external_id
+      )
+    );
+    return tactics;
+  }
+
   public findTechniqueByExternalId(
     externalId: string
   ): SimplifiedObject | undefined {
     return this.techniques.find((t) => t.external_id === externalId);
+  }
+
+  public findTechniquesByTacticId(tacticId: string): SimplifiedObject[] {
+    const tactic = this.findByExternalId(tacticId);
+    if (!tactic) {
+      return [];
+    }
+    return this.tacticTechniqueRelation[tactic.external_id].map(
+      (id) => this.findTechniqueByExternalId(id)!
+    );
   }
 }
