@@ -25,6 +25,8 @@ jobs:
           registry-url: https://npm.pkg.github.com/
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - run: pnpm build
       - run: cd packages/core
       - run: pnpm mitre-ttp-gen download
