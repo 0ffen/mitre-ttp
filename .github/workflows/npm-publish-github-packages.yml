@@ -20,7 +20,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: 'https://npm.pkg.github.com'
+          registry-url: '//npm.pkg.github.com/'
           token: ${{secrets.GITHUB_TOKEN}}
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
