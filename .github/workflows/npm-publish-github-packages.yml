@@ -11,12 +11,13 @@ on:
         required: true
         default: "ko-KR"
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   publish-gpr:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
