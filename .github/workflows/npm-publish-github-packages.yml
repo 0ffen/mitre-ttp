@@ -10,14 +10,14 @@ on:
         description: "Target language"
         required: true
         default: "ko-KR"
-
-permissions:
-  contents: read
-  packages: read
-
+        
 jobs:
   publish-gpr:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
