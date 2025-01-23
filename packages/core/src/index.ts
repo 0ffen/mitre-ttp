@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { LanguageCode } from "./lang";
 
-interface TTP {
+export interface TTP {
   title: string;
   description: string;
   external_id: string;
@@ -10,11 +10,11 @@ interface TTP {
   translated?: boolean;
 }
 
-interface Tactic extends TTP {
+export interface Tactic extends TTP {
   techniques?: Technique[];
 }
 
-interface Technique extends TTP {}
+export interface Technique extends TTP {}
 
 function binarySearch<T>(
   arr: T[],
