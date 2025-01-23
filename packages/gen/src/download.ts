@@ -3,7 +3,7 @@ import path from "path";
 
 import { tempPath } from "./utils/temp.js";
 
-export const versionPath = path.resolve(__dirname, "../version");
+export const versionPath = path.resolve(tempPath, "version");
 export const remoteTTPUrl =
   "https://raw.githubusercontent.com/mitre/cti/refs/heads/master/enterprise-attack/enterprise-attack.json";
 
