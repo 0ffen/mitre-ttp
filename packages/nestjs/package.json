@@ -1,11 +1,12 @@
 {
   "name": "@0ffen/mitre-ttp-nest",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "author": "",
   "license": "UNLICENSED",
   "main": "dist/index.js",
   "scripts": {
+    "prepare": "nest build",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
