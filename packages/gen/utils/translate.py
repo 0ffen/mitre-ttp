@@ -126,8 +126,9 @@ def write_json_file(file_path, content):
 def main():
     running_batch_id = get_running_batch_id()
 
+    datas = read_json_file("../tmp/objects.json")
+
     if not running_batch_id:
-        datas = read_json_file("../tmp/objects.json")
 
         objects = ""
 
